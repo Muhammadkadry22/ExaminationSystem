@@ -1,0 +1,158 @@
+@using ExaminationSystemITI.Abstractions.Enums
+@{
+    string view = this.ViewContext.View.Path.Split("/")[2].ToLower();
+    bool isAdmin = User.IsInRole(ERole.Admin.ToString());
+    bool isInstructor = User.IsInRole(ERole.Instructor.ToString());
+    bool isStudent = User.IsInRole(ERole.Student.ToString());
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ExaminationSystem</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/global/global.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ExaminationSystem.styles.css" asp-append-version="true" />
+    <style>
+        button:hover {
+            opacity: 0.5;
+        }
+
+        li:hover {
+            background-color: var(--custom-black);
+            opacity: 0.5;
+        }
+
+        @@media (max-width: 500px) {
+            .side-text {
+                display: none;
+            }
+
+            .side-bar {
+                width: 80px !important;
+            }
+
+            .avatar-name {
+                width: 48px !important;
+            }
+        }
+    </style>
+</head>
+<body style="height: 100vh; overflow-y: hidden">
+    <header class="w-100 custom-wrapper d-flex justify-content-center align-items-center shadow" style="background-color: var(--custom-white); height: 120px;">
+        <img src="~/assets/images/logos/logo.svg" class="w-100" style="max-width: 120px;" alt="ITI Logo" />
+    </header>
+    <section class="w-100 d-flex" style="height: calc(100vh - 120px);">
+        <div class="side-bar d-flex flex-column align-items-center" style="width: 160px; background-color: var(--custom-blue); padding: 32px 16px; gap: 32px;">
+            @if (isStudent)
+            {
+                <img src="~/assets/images/avatars/student.svg" class="avatar-name rounded-circle" />
+            }
+            else if (isInstructor)
+            {
+                <img src="~/assets/images/avatars/instructor.svg" class="avatar-name rounded-circle" />
+            }
+            else
+            {
+                <img src="~/assets/images/avatars/admin.svg" class="avatar-name rounded-circle" />
+            }
+            <hr class="w-100" style="height: 1px; background-color: var(--custom-white)" />
+            <div class="d-flex flex-column align-items-center justify-content-between" style="height: 100%; min-height: fit-content; gap: 32px;">
+                <ul class="w-100 d-flex flex-column list-group" style="gap: 16px;">
+                    @if (isStudent)
+                    {
+                        <li class="w-100 bg-transparent list-group-item border-0 d-flex align-items-center rounded" style="gap: 16px; padding: 8px 12px;cursor: pointer; transition-duration: 0.25s;">
+                            <img src="~/assets/icons/active.svg" style="width: 24px; height: 24px;" alt="Active" />
+                            <p class="poppins-medium side-text m-0" style="color: var(--custom-white);">
+                                <a asp-action="Exams" asp-controller="Student" asp-route-id="@ViewBag.StudentId" style="text-decoration: none; color: var(--custom-white)">
+                                    Active
+                                </a>
+                            </p>
+                        </li>
+                        <li class="w-100 bg-transparent list-group-item border-0 d-flex align-items-center rounded" style="gap: 16px; padding: 8px 12px;cursor: pointer; transition-duration: 0.25s;">
+                            <img src="~/assets/icons/done.svg" style="width: 24px; height: 24px;" alt="Active" />
+                            <p class="poppins-medium side-text m-0" style="color: var(--custom-white);">
+                                <a asp-action="Done" asp-controller="Student" asp-route-id="@ViewBag.StudentId" style="text-decoration: none; color: var(--custom-white)">
+                                    Done
+                                </a>
+                            </p>
+                        </li>
+                    }
+                    else
+                    {
+                        if (isAdmin)
+                        {
+                            <li class="w-100 bg-transparent list-group-item border-0 d-flex align-items-center rounded" style="gap: 16px; padding: 8px 12px; cursor: pointer; transition-duration: 0.25s;">
+                                <a asp-action="Read" asp-controller="Student" class="d-flex align-items-center" style="text-decoration: none; color: var(--custom-white); gap: 16px;">
+                                    <img src="~/assets/icons/crud.svg" style="width: 24px; height: 24px;" alt="Crud" />
+                                    <p class="poppins-medium side-text m-0">
+                                        CRUD
+                                    </p>
+                                </a>
+                            </li>
+                        }else if(isInstructor){
+                            <li class="w-100 bg-transparent list-group-item border-0 d-flex align-items-center rounded" style="gap: 16px; padding: 8px 12px; cursor: pointer; transition-duration: 0.25s;">
+                                <a asp-action="Read" asp-controller="Question" class="d-flex align-items-center" style="gap: 16px; text-decoration: none; color: var(--custom-white);">
+                                    <img src="~/assets/icons/crud.svg" style="width: 24px; height: 24px;" alt="Crud" />
+                                    <p class="poppins-medium side-text m-0">
+                                        Questions
+                                    </p>
+                                </a>
+                            </li>
+
+                            <li class="w-100 bg-transparent list-group-item border-0 d-flex align-items-center rounded" style="gap: 16px; padding: 8px 12px; cursor: pointer; transition-duration: 0.25s;">
+                                <a asp-action="Read" asp-controller="Exam" class="d-flex align-items-center" style="gap: 16px;text-decoration: none; color: var(--custom-white);">
+                                    <img src="~/assets/icons/active.svg" style="width: 24px; height: 24px;" alt="Crud" />
+                                    <p class="poppins-medium side-text m-0">
+                                        Exams
+                                    </p>
+                                </a>
+                            </li>
+                        }
+                        
+
+                    }
+                   @if (isAdmin){
+                    <li class="w-100 bg-transparent list-group-item border-0 d-flex align-items-center rounded" style="gap: 16px; padding: 8px 12px;cursor: pointer; transition-duration: 0.25s;">
+                         <a asp-action="Reports" asp-controller="Reporting" class="d-flex align-items-center" style="text-decoration: none; color: var(--custom-white); gap: 16px;">
+                            <img src="~/assets/icons/reports.svg" style="width: 24px; height: 24px;" alt="Reports" />
+                            <p class="poppins-medium side-text m-0" style="color: var(--custom-white);">
+                                Reports
+                            </p>
+                        </a>
+                    </li>
+                   }
+                   
+                    <li class="w-100 bg-transparent list-group-item border-0 d-flex align-items-center rounded" style="padding: 8px 12px; cursor: pointer; transition-duration: 0.25s;">
+                        <a asp-action="info" asp-controller="Account" class="d-flex align-items-center" style="text-decoration: none; color: var(--custom-white); gap: 16px;">
+                            <img src="~/assets/icons/account.svg" style="width: 24px; height: 24px;" alt="Crud" />
+                            <p class="poppins-medium side-text m-0">
+                                Account
+                            </p>
+                        </a>
+                    </li>
+                </ul>
+                <form asp-controller="Account" asp-action="LogOut" method="post">
+                    <button type="submit" class="w-100 border-0 d-flex align-items-center justify-content-between rounded" style="gap: 16px; padding: 8px 12px; cursor: pointer; background-color: var(--custom-red); transition-duration: 0.25s;">
+                        <img src="~/assets/icons/signout.svg" style="width: 24px; height: 24px;" alt="Sign Out" />
+                        <p class="poppins-medium side-text m-0" style="color: var(--custom-white); font-size: 15.75px;">
+                            Sign Out
+                        </p>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <main role="main" style="padding: 32px; overflow-y: scroll;" class="w-100">
+            @RenderBody()
+        </main>
+    </section>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
